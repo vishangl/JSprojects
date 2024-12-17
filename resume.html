@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Dynamic Resume</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    .resume-container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+    h1, h2, h3 {
+      margin: 0;
+      padding-bottom: 5px;
+    }
+    p, li {
+      margin: 5px 0;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    section {
+      margin-bottom: 20px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="resume-container">
+    <header>
+      <h1 id="name">[Name]</h1>
+      <p id="title">[Title]</p>
+    </header>
+    <hr>
+    <section>
+      <h2>Contact</h2>
+      <p id="email"></p>
+      <p id="phone"></p>
+    </section>
+    <section>
+      <h2>Experience</h2>
+      <h3 id="company"></h3>
+      <p id="role"></p>
+      <p id="duration"></p>
+    </section>
+    <hr>
+    <section>
+      <h2>Education</h2>
+      <h3 id="degree"></h3>
+      <p id="institution"></p>
+      <p id="education-duration"></p>
+    </section>
+  </div>
+  <script>
+    // Simple Resume Data
+    document.getElementById("name").innerText = "Vishang lad";
+    document.getElementById("title").innerText = "Web Developer";
+
+    // Contact
+    document.getElementById("email").innerText = "Email: vishanglad1807@gmail.com";
+    document.getElementById("phone").innerText = "Phone: +91 9313575198";
+
+
+
+    // Experience
+    document.getElementById("company").innerText = "TechCorp";
+    document.getElementById("role").innerText = "Frontend Developer";
+    document.getElementById("duration").innerText = "Jan 2025 - Present";
+
+    // Education
+    document.getElementById("degree").innerText = "Bachelor of Information and technology";
+    document.getElementById("institution").innerText = "Parul Institute of engineering and technology";
+    document.getElementById("education-duration").innerText = "2021 - 2024";
+  </script>
+</body>
+</html>
