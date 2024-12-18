@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Unit Converter</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298, #6a11cb, #2575fc);
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .converter-container {
+      background-color: #161b22;
+      padding: 25px;
+      width: 600px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      color: #58a6ff;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      background-color: #21262d;
+      border: 1px solid #30363d;
+      color: #ffffff;
+      font-size: 1rem;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    select:focus {
+      border-color: #58a6ff;
+      box-shadow: 0 0 5px #58a6ff;
+    }
+
+    .input-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 15px 0;
+    }
+
+    input {
+      width: 45%;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      background-color: #21262d;
+      color: #ffffff;
+      border: 1px solid #30363d;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #58a6ff;
+      box-shadow: 0 0 5px #58a6ff;
+    }
+
+    .formula {
+      color: #58a6ff;
+      font-size: 1.1rem;
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .formula span {
+      color: #ffffff;
+    }
+
+    .btn {
+      background-color: #238636;
+      color: #ffffff;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #2ea043;
+    }
+  </style>
+</head>
+<body>
+  <div class="converter-container">
+    <h1>Dynamic Unit Converter</h1>
+
+    <select id="converterType" onchange="updateUnits()">
+      <option value="temperature">Temperature</option>
+      <option value="area">Area</option>
+      <option value="dataRate">Data Transfer Rate</option>
+      <option value="digitalStorage">Digital Storage</option>
+      <option value="energy">Energy</option>
+      <option value="frequency">Frequency</option>
+      <option value="fuelEconomy">Fuel Economy</option>
+      <option value="length">Length</option>
+      <option value="mass">Mass</option>
+      <option value="planeAngle">Plane Angle</option>
+      <option value="pressure">Pressure</option>
+      <option value="speed">Speed</option>
+      <option value="time">Time</option>
+      <option value="volume">Volume</option>
+    </select>
+
+    <div class="input-row">
+      <input type="number" id="inputValue" placeholder="Enter Value" oninput="convertValue()">
+      <span>=</span>
+      <input type="text" id="outputValue" placeholder="Result" disabled>
+    </div>
+
+    <div class="input-row">
+      <select id="fromUnit" onchange="convertValue()"></select>
+      <select id="toUnit" onchange="convertValue()"></select>
+    </div>
+
+    <div class="formula">
+      Formula: <span id="formulaDisplay">Select a unit to see the formula.</span>
+    </div>
+  </div>
+  <script>
+    const units = {
+      temperature: ["Celsius", "Fahrenheit", "Kelvin"],
+      length: ["Meter", "Kilometer", "Mile"],
+      mass: ["Kilogram", "Gram", "Pound"],
+      speed: ["Meters per second", "Kilometers per hour", "Miles per hour"],
+      volume: ["Liter", "Milliliter", "Gallon"],
+      area: ["Square Meter", "Square Kilometer", "Acre"],
+      dataRate: ["Kbps", "Mbps", "Gbps"],
+      digitalStorage: ["Byte", "Kilobyte", "Megabyte", "Gigabyte"],
+      energy: ["Joule", "Kilojoule", "Calorie"],
+      frequency: ["Hertz", "Kilohertz", "Megahertz"],
+      time: ["Second", "Minute", "Hour"]
+    };
+  
+    function populateUnits(type) {
+      const fromUnit = document.getElementById("fromUnit");
+      const toUnit = document.getElementById("toUnit");
+      fromUnit.innerHTML = "";
+      toUnit.innerHTML = "";
+  
+      units[type].forEach(unit => {
+        fromUnit.add(new Option(unit, unit));
+        toUnit.add(new Option(unit, unit));
+      });
+  
+      toUnit.selectedIndex = 1; 
+    }
+  
+    function updateUnits() {
+      const type = document.getElementById("converterType").value;
+      populateUnits(type);
+      convertValue();
+    }
+  
+    function convertValue() {
+      const inputValue = parseFloat(document.getElementById("inputValue").value) || 0;
+      const fromUnit = document.getElementById("fromUnit").value;
+      const toUnit = document.getElementById("toUnit").value;
+      const type = document.getElementById("converterType").value;
+  
+      let result = inputValue;
+  
+   
+      if (type === "temperature") {
+        if (fromUnit === "Celsius" && toUnit === "Fahrenheit") result = (inputValue * 9) / 5 + 32;
+        else if (fromUnit === "Fahrenheit" && toUnit === "Celsius") result = ((inputValue - 32) * 5) / 9;
+        else if (fromUnit === "Celsius" && toUnit === "Kelvin") result = inputValue + 273.15;
+        else if (fromUnit === "Kelvin" && toUnit === "Celsius") result = inputValue - 273.15;
+        else if (fromUnit === "Fahrenheit" && toUnit === "Kelvin") result = ((inputValue - 32) * 5) / 9 + 273.15;
+        else if (fromUnit === "Kelvin" && toUnit === "Fahrenheit") result = ((inputValue - 273.15) * 9) / 5 + 32;
+      } else if (type === "length") {
+        if (fromUnit === "Meter" && toUnit === "Kilometer") result = inputValue / 1000;
+        else if (fromUnit === "Kilometer" && toUnit === "Meter") result = inputValue * 1000;
+        else if (fromUnit === "Meter" && toUnit === "Mile") result = inputValue / 1609.34;
+        else if (fromUnit === "Mile" && toUnit === "Meter") result = inputValue * 1609.34;
+        else if (fromUnit === "Kilometer" && toUnit === "Mile") result = inputValue / 1.609;
+        else if (fromUnit === "Mile" && toUnit === "Kilometer") result = inputValue * 1.609;
+      } else if (type === "mass") {
+        if (fromUnit === "Kilogram" && toUnit === "Gram") result = inputValue * 1000;
+        else if (fromUnit === "Gram" && toUnit === "Kilogram") result = inputValue / 1000;
+        else if (fromUnit === "Kilogram" && toUnit === "Pound") result = inputValue * 2.20462;
+        else if (fromUnit === "Pound" && toUnit === "Kilogram") result = inputValue / 2.20462;
+      } else if (type === "speed") {
+        if (fromUnit === "Meters per second" && toUnit === "Kilometers per hour") result = inputValue * 3.6;
+        else if (fromUnit === "Kilometers per hour" && toUnit === "Meters per second") result = inputValue / 3.6;
+        else if (fromUnit === "Meters per second" && toUnit === "Miles per hour") result = inputValue * 2.23694;
+        else if (fromUnit === "Miles per hour" && toUnit === "Meters per second") result = inputValue / 2.23694;
+      } else if (type === "volume") {
+        if (fromUnit === "Liter" && toUnit === "Milliliter") result = inputValue * 1000;
+        else if (fromUnit === "Milliliter" && toUnit === "Liter") result = inputValue / 1000;
+        else if (fromUnit === "Liter" && toUnit === "Gallon") result = inputValue / 3.785;
+        else if (fromUnit === "Gallon" && toUnit === "Liter") result = inputValue * 3.785;
+      } else {
+        result = inputValue; 
+      }
+  
+     
+      document.getElementById("outputValue").value = result.toFixed(4);
+      document.getElementById("formulaDisplay").innerText = `Conversion from ${fromUnit} to ${toUnit}`;
+    }
+  
+    
+    updateUnits();
+  </script>
+  
+</body>
+</html>
