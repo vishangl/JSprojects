@@ -7,40 +7,51 @@
     <style>
         /* General Styling */
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: radial-gradient(circle, rgba(255, 193, 7, 1) 0%, rgba(255, 87, 34, 1) 100%);
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
             color: #fff;
             text-align: center;
             overflow: hidden;
+            transition: all 0.3s ease;
         }
 
         .container {
-            background-color: rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.6);
             padding: 40px;
             border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            width: 320px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            width: 360px;
             backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+            font-size: 2.8rem;
+            margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 3px;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            font-weight: bold;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
         }
 
         p {
             font-size: 1.1rem;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             font-weight: 300;
+            line-height: 1.5;
+        }
+
+        label {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 500;
         }
 
         input[type="number"] {
@@ -48,33 +59,33 @@
             font-size: 1.2rem;
             border-radius: 10px;
             border: 2px solid #fff;
-            width: 80%;
+            width: 100%;
             margin-bottom: 15px;
-            background-color: rgba(255, 255, 255, 0.5);
-            color: #333;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
             transition: all 0.3s ease;
         }
 
         input[type="number"]:focus {
             outline: none;
             border-color: #ffeb3b;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.3);
         }
 
         button {
-            padding: 12px 24px;
-            background-color: #4CAF50;
-            color: white;
+            padding: 12px 20px;
+            background-color: #009688;
+            color: #fff;
             border: none;
             border-radius: 50px;
             font-size: 1.2rem;
             cursor: pointer;
-            width: 85%;
+            width: 100%;
             transition: transform 0.3s ease, background-color 0.3s ease;
         }
 
         button:hover {
-            background-color: #388e3c;
+            background-color: #00796b;
             transform: translateY(-5px);
         }
 
@@ -111,7 +122,7 @@
             background-color: rgba(233, 30, 99, 0.3);
         }
 
-        /* Animated Background */
+        /* Floating Bubbles */
         @keyframes pulse {
             0% {
                 transform: scale(1);
@@ -124,7 +135,6 @@
             }
         }
 
-        /* Floating Bubbles */
         .bubble {
             position: absolute;
             background-color: rgba(255, 255, 255, 0.2);
@@ -134,7 +144,6 @@
             animation: pulse 4s ease-in-out infinite;
         }
 
-        /* Random Bubbles */
         .bubble:nth-child(1) { width: 60px; height: 60px; left: 10%; animation-duration: 6s; top: 20%; animation-delay: 0s; }
         .bubble:nth-child(2) { width: 80px; height: 80px; left: 30%; animation-duration: 8s; top: 30%; animation-delay: 1s; }
         .bubble:nth-child(3) { width: 100px; height: 100px; left: 60%; animation-duration: 7s; top: 50%; animation-delay: 2s; }
@@ -154,58 +163,98 @@
 
     <div class="container">
         <h1>Guess the Number</h1>
-        <p>Guess a number between <strong>1</strong> and <strong>100</strong></p>
-        <input type="number" id="userGuess" placeholder="Enter your guess" min="1" max="100" />
+        <p>Set a range and try to guess the number within it!</p>
+        <label for="startRange">Start of Range:</label>
+        <input type="number" id="startRange" placeholder="Start" min="1" max="100" />
+        <label for="endRange">End of Range:</label>
+        <input type="number" id="endRange" placeholder="End" min="1" max="100" />
+        <button id="setRange">Set Range</button>
+        
+        <p>Guess a number between <strong id="rangeLabel">1</strong> and <strong id="endRangeLabel">100</strong></p>
+        <input type="number" id="userGuess" placeholder="Enter your guess" />
         <button id="submitGuess">Submit Guess</button>
         <div id="message"></div>
     </div>
 
     <script>
-        // Random number between 1 and 100
-        const randomNumber = Math.floor(Math.random() * 100) + 1;
-
         // DOM Elements
-        const userGuessInput = document.getElementById('userGuess');
-        const submitButton = document.getElementById('submitGuess');
-        const messageElement = document.getElementById('message');
+        const userGuessInput = document.getElementById('userGuess')
+        const submitButton = document.getElementById('submitGuess')
+        const messageElement = document.getElementById('message')
+        const startRangeInput = document.getElementById('startRange')
+        const endRangeInput = document.getElementById('endRange')
+        const rangeLabel = document.getElementById('rangeLabel')
+        const endRangeLabel = document.getElementById('endRangeLabel')
+        const setRangeButton = document.getElementById('setRange')
+
+        let randomNumber, startRange, endRange
+
+        // Set the range and random number
+        function setRange() 
+        {
+            startRange = Number(startRangeInput.value)
+            endRange = Number(endRangeInput.value)
+
+            if (startRange >= endRange || startRange < 1 || endRange > 100) 
+            {
+                messageElement.textContent = "Please enter a valid range where Start < End and both are between 1 and 100."
+                messageElement.className = "error"
+                return
+            }
+
+            randomNumber = Math.floor(Math.random() * (endRange - startRange + 1)) + startRange
+            rangeLabel.textContent = startRange
+            endRangeLabel.textContent = endRange
+            messageElement.textContent = "Now guess the number!"
+            messageElement.className = ""
+        }
 
         // Function to handle the guess
-        function checkGuess() {
-            const userGuess = Number(userGuessInput.value);
+        function checkGuess() 
+        {
+            const userGuess = Number(userGuessInput.value)
 
             // Validate the guess
-            if (!userGuess || userGuess < 1 || userGuess > 100) {
-                messageElement.textContent = "Please enter a number between 1 and 100.";
-                messageElement.className = "error";
-                return;
+            if (!userGuess || userGuess < startRange || userGuess > endRange) 
+            {
+                messageElement.textContent = `Please enter a number between ${startRange} and ${endRange}.`
+                messageElement.className = "error"
+                return
             }
 
             // Check if the guess is correct, too high or too low
-            if (userGuess === randomNumber) {
-                messageElement.textContent = "🎉 Correct! You've guessed the number!";
-                messageElement.className = "correct";
-            } else if (userGuess > randomNumber) {
-                messageElement.textContent = "❌ Too high! Try a smaller number.";
-                messageElement.className = "too-high";
-            } else {
-                messageElement.textContent = "❌ Too low! Try a larger number.";
-                messageElement.className = "too-low";
+            if (userGuess === randomNumber) 
+            {
+                messageElement.textContent = "🎉 Correct! You've guessed the number!"
+                messageElement.className = "correct"
+            } 
+            else if (userGuess > randomNumber) 
+            {
+                messageElement.textContent = "❌ Too high! Try a smaller number."
+                messageElement.className = "too-high"
+            } 
+            else 
+            {
+                messageElement.textContent = "❌ Too low! Try a larger number."
+                messageElement.className = "too-low"
             }
 
             // Reset the input
-            userGuessInput.value = '';
-            userGuessInput.focus();
+            userGuessInput.value = ''
+            userGuessInput.focus()
         }
 
         // Add event listeners
-        submitButton.addEventListener('click', checkGuess);
+        setRangeButton.addEventListener('click', setRange)
+        submitButton.addEventListener('click', checkGuess)
 
         // Allow submitting with the Enter key
         userGuessInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter') 
+            {
                 checkGuess();
             }
-        });
+        })
     </script>
 
 </body>
