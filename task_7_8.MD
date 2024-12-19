@@ -1,1 +1,1 @@
-| vishang Lad | 2203031080035   | [https://jsprojects3.pages.dev/random](#) | [](#)|[https://github.com/vishangl/JSprojects](#)|
+| vishang Lad | 2203031080035   | [https://jsprojects3.pages.dev/random](#) | [https://jsprojects3.pages.dev/random_password](#)|[https://github.com/vishangl/JSprojects](#)|
